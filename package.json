@@ -1,0 +1,14 @@
+{
+  "name": "centrifughe-app",
+  "version": "1.0.0",
+  "description": "Web-app PWA per scoprire quali centrifughe ed estratti preparare con gli ingredienti che hai in casa. Vanilla JS, zero build, con Supabase opzionale.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes serve . -l 8100",
+    "dev": "npx --yes serve . -l 8100",
+    "serve:python": "python -m http.server 8100"
+  },
+  "keywords": ["centrifughe", "estratti", "succhi", "pwa", "supabase", "nutrizione"],
+  "license": "MIT"
+}

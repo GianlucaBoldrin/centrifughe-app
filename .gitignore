@@ -1,0 +1,30 @@
+# Dipendenze (non usate in questo progetto zero-build, ma per sicurezza)
+node_modules/
+
+# Variabili d'ambiente e configurazioni locali con eventuali segreti
+.env
+.env.*
+!.env.example
+config.local.js
+
+# File di sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# Netlify
+.netlify/
+
+# Log
+*.log
+npm-debug.log*
+
+# Script utilità icone (facoltativo tenerlo nel repo)
+# assets/icons/_generate_icons.ps1
+
+# NOTA: config.js è volutamente TRACCIATO nel repo con valori vuoti,
+# così il sito funziona subito. Non inserirvi la service_role key.

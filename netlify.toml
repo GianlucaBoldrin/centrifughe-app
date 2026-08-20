@@ -1,0 +1,25 @@
+# Configurazione Netlify.
+# Questo è un sito statico "zero build": non serve compilare nulla.
+# Netlify deve semplicemente pubblicare i file della cartella del progetto.
+
+[build]
+  # Nessun passo di build: sito statico servito così com'è.
+  command = ""
+  publish = "."
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"

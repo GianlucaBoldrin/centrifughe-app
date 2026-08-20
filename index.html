@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Centrifughe & Estratti</title>
+  <meta name="description" content="Scopri quali centrifughe ed estratti puoi preparare con gli ingredienti che hai in casa." />
+  <meta name="theme-color" content="#1F7A60" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Centrifughe" />
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <img class="brand-logo" src="assets/icons/icon-192.png" alt="" width="40" height="40" />
+        <div>
+          <h1 class="brand-title">Centrifughe &amp; Estratti</h1>
+          <p class="brand-tag">Cosa puoi preparare con ciò che hai in casa</p>
+        </div>
+      </div>
+      <button id="btn-info" class="icon-btn" type="button" aria-label="Informazioni e fonti" title="Informazioni e fonti">&#9432;</button>
+    </div>
+  </header>
+
+  <!-- Suggerimento installazione iOS -->
+  <div id="ios-hint" class="ios-hint" hidden>
+    <div class="wrap ios-hint-inner">
+      <span>Per installare l'app su iPhone: tocca <strong>Condividi</strong> e poi <strong>“Aggiungi alla schermata Home”</strong>.</span>
+      <button id="ios-hint-close" class="link-btn" type="button">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- Banner installazione (Android/Chrome) -->
+  <div id="install-banner" class="install-banner" hidden>
+    <div class="wrap install-inner">
+      <span>Installa Centrifughe come app sul tuo dispositivo.</span>
+      <span class="install-actions">
+        <button id="install-yes" class="btn btn-small" type="button">Installa</button>
+        <button id="install-no" class="link-btn" type="button">No, grazie</button>
+      </span>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <!-- INGREDIENTI -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">I tuoi ingredienti</h2>
+        <span id="selected-count" class="panel-sub">Nessun ingrediente selezionato</span>
+      </div>
+      <div class="ing-controls">
+        <input id="ing-search" class="search" type="search" placeholder="Cerca ingrediente…" aria-label="Cerca ingrediente" />
+        <div class="ing-buttons">
+          <button id="select-all" class="btn btn-ghost" type="button">Seleziona tutti</button>
+          <button id="select-none" class="btn btn-ghost" type="button">Deseleziona tutti</button>
+        </div>
+      </div>
+      <div id="ingredients" class="ingredients"></div>
+    </section>
+
+    <!-- RIEPILOGO -->
+    <div id="summary" class="summary"></div>
+
+    <!-- TOOLBAR RICETTE -->
+    <section class="toolbar">
+      <input id="recipe-search" class="search search-recipes" type="search" placeholder="Cerca ricetta o ingrediente…" aria-label="Cerca ricetta o ingrediente" />
+      <div class="toolbar-row">
+        <label class="sort-wrap">
+          <span class="sort-label">Ordina</span>
+          <select id="sort" class="select" aria-label="Ordina per"></select>
+        </label>
+        <div class="toolbar-actions">
+          <button id="btn-favorites" class="toggle" type="button">&#9733; Preferiti</button>
+          <button id="btn-surprise" class="toggle" type="button">&#10024; Sorprendimi</button>
+          <button id="btn-viewall" class="toggle" type="button">Tutte le ricette</button>
+        </div>
+      </div>
+      <div id="filters" class="filters" role="group" aria-label="Filtri"></div>
+    </section>
+
+    <!-- RISULTATI -->
+    <div id="results" class="results"></div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="wrap footer-inner">
+      <p>Centrifughe &amp; Estratti — <span id="data-source">dati: locali</span></p>
+      <p class="footer-note">I valori nutrizionali sono stime a scopo informativo e non sostituiscono un consulto medico o nutrizionale. Le proprietà indicate sono di natura nutrizionale, non terapeutica.</p>
+      <button class="link-btn" id="btn-info-2" type="button" onclick="document.getElementById('btn-info').click()">Informazioni e fonti</button>
+    </div>
+  </footer>
+
+  <!-- MODALE RICETTA -->
+  <div id="modal" class="overlay" role="dialog" aria-modal="true" aria-label="Dettaglio ricetta">
+    <div class="modal">
+      <button id="modal-close" class="modal-close" type="button" aria-label="Chiudi">&times;</button>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- MODALE INFO -->
+  <div id="info-modal" class="overlay" role="dialog" aria-modal="true" aria-label="Informazioni e fonti">
+    <div class="modal modal-info">
+      <button id="info-close" class="modal-close" type="button" aria-label="Chiudi">&times;</button>
+      <div class="modal-body">
+        <h2>Informazioni e fonti</h2>
+        <p>Questa applicazione ti aiuta a scoprire quali centrifughe ed estratti puoi preparare con gli ingredienti che hai in casa, con quantità normalizzate per circa 600 ml.</p>
+
+        <h3>Nota sui dati nutrizionali</h3>
+        <ul>
+          <li>I valori nutrizionali e i micronutrienti indicati sono <strong>stime</strong> e possono variare in funzione di varietà, maturazione, resa dell'estrattore e proporzioni effettive.</li>
+          <li>Nel passaggio a succo <strong>gran parte della fibra insolubile viene rimossa con la polpa</strong>: la fibra reale del centrifugato è molto inferiore a quella del frutto o della verdura interi.</li>
+          <li>Le informazioni hanno scopo <strong>nutrizionale e informativo</strong>, non terapeutico, e <strong>non sostituiscono un consulto medico o nutrizionale</strong>.</li>
+        </ul>
+
+        <h3>Fonti principali consultate</h3>
+        <ul>
+          <li>USDA FoodData Central — composizione degli alimenti</li>
+          <li>CREA — Tabelle di composizione degli alimenti (Italia)</li>
+          <li>EFSA — indicazioni sulla funzione dei nutrienti (health claims autorizzati)</li>
+          <li>NIH — Office of Dietary Supplements (schede vitamine e minerali)</li>
+        </ul>
+        <p class="muted">Per l'individuazione delle combinazioni più diffuse sono state confrontate più fonti di settore; i siti di cucina non sono stati usati come fonte primaria per informazioni nutrizionali.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Config (Supabase opzionale). Modificabile senza build. -->
+  <script src="config.js"></script>
+  <!-- Dati -->
+  <script src="assets/js/data/micronutrients.js"></script>
+  <script src="assets/js/data/ingredients.js"></script>
+  <script src="assets/js/data/recipes.js"></script>
+  <!-- Librerie -->
+  <script src="assets/js/lib/storage.js"></script>
+  <script src="assets/js/lib/calc.js"></script>
+  <script src="assets/js/lib/dataProvider.js"></script>
+  <!-- App -->
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
