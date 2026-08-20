@@ -2,7 +2,7 @@
  * Strategia: cache-first per gli asset statici, con aggiornamento in background.
  * Le chiamate a Supabase (rete) NON vengono messe in cache.
  */
-var CACHE = "centrifughe-v3";
+var CACHE = "centrifughe-v4";
 var ASSETS = [
   "./",
   "./index.html",
@@ -41,19 +41,23 @@ self.addEventListener("fetch", function (e) {
   var req = e.request;
   if (req.method !== "GET") return;
   var url = new URL(req.url);
-  // Non intercettare le chiamate cross-origin (es. Supabase): vanno sempre in rete.
+  // Non intercettare le chiamate cross-origin (es. Supabase, Google Fonts): vanno in rete.
   if (url.origin !== self.location.origin) return;
 
+  // Strategia "network-first": quando c'è connessione si prende SEMPRE l'ultima
+  // versione (così gli aggiornamenti si vedono subito), con aggiornamento della
+  // cache; offline si usa la copia salvata in cache (con fallback su index.html).
   e.respondWith(
-    caches.match(req).then(function (cached) {
-      var network = fetch(req).then(function (res) {
-        if (res && res.status === 200 && res.type === "basic") {
-          var copy = res.clone();
-          caches.open(CACHE).then(function (c) { c.put(req, copy); });
-        }
-        return res;
-      }).catch(function () { return cached; });
-      return cached || network;
+    fetch(req).then(function (res) {
+      if (res && res.status === 200 && res.type === "basic") {
+        var copy = res.clone();
+        caches.open(CACHE).then(function (c) { c.put(req, copy); });
+      }
+      return res;
+    }).catch(function () {
+      return caches.match(req).then(function (cached) {
+        return cached || caches.match("./index.html");
+      });
     })
   );
 });
