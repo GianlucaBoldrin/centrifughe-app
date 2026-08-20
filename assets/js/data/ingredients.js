@@ -108,6 +108,9 @@ window.INGREDIENTS = [
   { slug: "lattuga", name: "Lattuga", category: "verdura", color: "#9CCC65", icon: "🥬", yield_ratio: 0.35,
     contribution: "Molto leggera e idratante, con folati e vitamina K. Sapore neutro-dolce.",
     notes: "Lavare le foglie. Resa modesta: usare come componente idratante e delicata." },
+  { slug: "zucca", name: "Zucca", category: "verdura", color: "#E8871E", icon: "🎃", yield_ratio: 0.45,
+    contribution: "Ricca di beta-carotene (provitamina A) e potassio, con sapore dolce e delicato e poche calorie.",
+    notes: "Sbucciare ed eliminare semi e filamenti. Ortaggio duro: tagliarlo a pezzi piccoli e alternarlo a ingredienti morbidi. Preferire zucca ben matura." },
 
   // ---------------- AROMATICI / EXTRA ----------------
   { slug: "zenzero", name: "Zenzero", category: "aromatici", color: "#E6B84D", icon: "🫚", yield_ratio: 0.40,
