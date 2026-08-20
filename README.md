@@ -3,7 +3,7 @@
 Web-app elegante e **installabile (PWA)** per scoprire **quali centrifughe/estratti puoi preparare** con gli ingredienti che hai in casa. Funziona su **computer, tablet e smartphone (iPhone e Android)**.
 
 - ✅ Seleziona gli ingredienti che possiedi → l'app mostra le ricette **che puoi preparare ora**, quelle a cui **manca un solo ingrediente** e **tutte le ricette**.
-- ✅ 38 ricette ragionate, normalizzate per **~600 ml**, con **valori nutrizionali stimati**, micronutrienti, benefici e preparazione.
+- ✅ 42 ricette ragionate, normalizzate per **~600 ml**, con **valori nutrizionali stimati**, micronutrienti, benefici e preparazione.
 - ✅ Ricerca, filtri, ordinamenti, **preferiti**, **selettore porzione** (300–1200 ml), pulsante **Sorprendimi**.
 - ✅ **Nessuna registrazione richiesta.** Preferiti e selezioni salvati sul dispositivo (localStorage).
 - ✅ **Zero build**: è un sito statico. Si pubblica su Netlify senza compilare nulla.
@@ -37,7 +37,7 @@ centrifughe-app/
 └── supabase/
     ├── schema.sql            # creazione tabelle
     ├── policies.sql          # sicurezza (Row Level Security)
-    └── seed.sql              # dati iniziali (ingredienti + 38 ricette)
+    └── seed.sql              # dati iniziali (ingredienti + 42 ricette)
 ```
 
 ---
@@ -73,7 +73,7 @@ npm start
 
 > ⚠️ Non aprire `index.html` con un doppio clic (percorso `file://`): alcune funzioni (service worker/PWA) richiedono un piccolo server come sopra. Per il semplice test dell'interfaccia funziona comunque, ma è meglio usare il server locale.
 
-A questo punto l'app funziona **già completamente**, con tutte le 38 ricette: Supabase non è necessario.
+A questo punto l'app funziona **già completamente**, con tutte le 42 ricette: Supabase non è necessario.
 
 ---
 
@@ -90,7 +90,7 @@ Serve solo se vuoi gestire ricette/ingredienti da un database in cloud. **Puoi s
 2. Esegui gli script **in quest'ordine**, copiando il contenuto di ciascun file e premendo **Run**:
    1. `supabase/schema.sql`  → crea le tabelle
    2. `supabase/policies.sql` → imposta la sicurezza (lettura pubblica, scrittura protetta)
-   3. `supabase/seed.sql`    → inserisce ingredienti e le 38 ricette
+   3. `supabase/seed.sql`    → inserisce ingredienti e le 42 ricette
 
 ### 3.3 Prendi URL e chiave pubblica
 1. In Supabase apri **Project Settings → API**.

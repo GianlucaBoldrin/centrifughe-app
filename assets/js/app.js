@@ -158,20 +158,46 @@
     sortSel.value = state.sort;
     sortSel.addEventListener("change", function () { state.sort = sortSel.value; render(); });
 
-    // filtri
+    // filtri (raggruppati per chiarezza)
+    var groups = [
+      { label: "Gusto", ids: ["fresca", "dolce", "vegetale", "agrumata", "speziata", "frutti-di-bosco"] },
+      { label: "Proprietà", ids: ["ricca-vit-c", "ricca-carotenoidi", "kcal200", "kcal150"] },
+    ];
     var fwrap = $("#filters");
-    FILTERS.forEach(function (f) {
-      fwrap.appendChild(el("button", {
-        class: "filter", type: "button", "data-id": f.id,
-        text: f.label,
-        onclick: function (e) {
-          if (state.activeFilters.has(f.id)) state.activeFilters.delete(f.id);
-          else state.activeFilters.add(f.id);
-          e.currentTarget.classList.toggle("filter--on");
-          render();
-        },
-      }));
+    fwrap.innerHTML = "";
+    groups.forEach(function (g) {
+      var row = el("div", { class: "filter-group" }, [
+        el("span", { class: "filter-group-label", text: g.label }),
+      ]);
+      g.ids.forEach(function (id) {
+        var f = FILTERS.filter(function (x) { return x.id === id; })[0];
+        if (!f) return;
+        row.appendChild(el("button", {
+          class: "filter", type: "button", "data-id": id, text: f.label,
+          onclick: function (e) {
+            if (state.activeFilters.has(id)) state.activeFilters.delete(id);
+            else state.activeFilters.add(id);
+            e.currentTarget.classList.toggle("filter--on");
+            render();
+          },
+        }));
+      });
+      fwrap.appendChild(row);
     });
+
+    // azzera filtri, ricerca e preferiti
+    $("#filters-reset").addEventListener("click", function () {
+      state.activeFilters.clear();
+      state.onlyFavorites = false;
+      state.recipeSearch = "";
+      $("#recipe-search").value = "";
+      $("#btn-favorites").classList.remove("toggle--on");
+      document.querySelectorAll("#filters .filter--on").forEach(function (x) { x.classList.remove("filter--on"); });
+      render();
+    });
+
+    // "Vai alle ricette"
+    $("#btn-go-recipes").addEventListener("click", scrollToResults);
 
     // ricerca ingredienti
     $("#ing-search").addEventListener("input", function (e) {
@@ -267,6 +293,22 @@
     var visible = recipes.filter(passesFilters);
     var results = $("#results");
     results.innerHTML = "";
+
+    // Bottone "Vai alle ricette" + conteggio risultati
+    var readyAll = recipes.filter(function (r) { return r._compat.status === "ready"; }).length;
+    var goWrap = $("#go-recipes"), goBtn = $("#btn-go-recipes");
+    if (goWrap && goBtn) {
+      if (state.selected.size > 0) {
+        goWrap.hidden = false;
+        goBtn.textContent = readyAll > 0
+          ? "Vai alle ricette · " + readyAll + (readyAll === 1 ? " pronta" : " pronte")
+          : "Vai alle ricette";
+      } else {
+        goWrap.hidden = true;
+      }
+    }
+    var rc = $("#results-count");
+    if (rc) rc.textContent = visible.length + (visible.length === 1 ? " ricetta" : " ricette");
 
     if (state.viewAll) {
       renderSection(results, "Tutte le ricette", sortRecipes(visible), true);
@@ -475,6 +517,12 @@
     ]);
     body.appendChild(section("Valori nutrizionali indicativi (~" + state.portion + " ml)", el("div", {}, [nutrGrid, nutrNotes])));
 
+    // Grafico a torta: ripartizione energetica dei macronutrienti
+    body.appendChild(section("Ripartizione dei macronutrienti", el("div", {}, [
+      macroDonut(n),
+      el("p", { class: "donut-note", text: "Percentuali calcolate sull'energia (kcal) fornita da carboidrati, proteine e grassi." }),
+    ])));
+
     // Micronutrienti
     if (r.micronutrients && r.micronutrients.length) {
       var micList = el("ul", { class: "micro-list" }, r.micronutrients.map(function (k) {
@@ -536,6 +584,73 @@
   function closeModal() { closeOverlay("#modal"); }
   function openInfo() { openOverlay("#info-modal"); }
   function closeInfo() { closeOverlay("#info-modal"); }
+
+  function scrollToResults() {
+    var t = $("#summary") || $("#results");
+    if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // ---- Grafico a torta (ciambella) della ripartizione energetica dei macronutrienti ----
+  function macroDonut(nutrition) {
+    var parts = [
+      { key: "carbs", label: "Carboidrati", grams: nutrition.carbs, kcal: nutrition.carbs * 4, color: "#EBA13A" },
+      { key: "protein", label: "Proteine", grams: nutrition.protein, kcal: nutrition.protein * 4, color: "#3E9C77" },
+      { key: "fat", label: "Grassi", grams: nutrition.fat, kcal: nutrition.fat * 9, color: "#E0687A" },
+    ];
+    var total = parts.reduce(function (s, p) { return s + p.kcal; }, 0) || 1;
+
+    var size = 132, stroke = 26, r = (size - stroke) / 2, cx = size / 2, cy = size / 2;
+    var circ = 2 * Math.PI * r;
+    var svgNS = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 " + size + " " + size);
+    svg.setAttribute("class", "donut");
+    svg.setAttribute("role", "img");
+    svg.setAttribute("aria-label", "Ripartizione dei macronutrienti");
+
+    // cerchio di sfondo
+    var bg = document.createElementNS(svgNS, "circle");
+    bg.setAttribute("cx", cx); bg.setAttribute("cy", cy); bg.setAttribute("r", r);
+    bg.setAttribute("fill", "none"); bg.setAttribute("stroke", "var(--border)"); bg.setAttribute("stroke-width", stroke);
+    svg.appendChild(bg);
+
+    var offset = 0;
+    parts.forEach(function (p) {
+      var frac = p.kcal / total;
+      if (frac <= 0) return;
+      var seg = document.createElementNS(svgNS, "circle");
+      seg.setAttribute("cx", cx); seg.setAttribute("cy", cy); seg.setAttribute("r", r);
+      seg.setAttribute("fill", "none");
+      seg.setAttribute("stroke", p.color);
+      seg.setAttribute("stroke-width", stroke);
+      seg.setAttribute("stroke-dasharray", (frac * circ) + " " + circ);
+      seg.setAttribute("stroke-dashoffset", -offset * circ);
+      seg.setAttribute("transform", "rotate(-90 " + cx + " " + cy + ")");
+      seg.setAttribute("stroke-linecap", "butt");
+      svg.appendChild(seg);
+      offset += frac;
+    });
+
+    // etichetta centrale (kcal)
+    var t1 = document.createElementNS(svgNS, "text");
+    t1.setAttribute("x", cx); t1.setAttribute("y", cy - 2); t1.setAttribute("text-anchor", "middle");
+    t1.setAttribute("class", "donut-kcal"); t1.textContent = nutrition.kcal;
+    var t2 = document.createElementNS(svgNS, "text");
+    t2.setAttribute("x", cx); t2.setAttribute("y", cy + 14); t2.setAttribute("text-anchor", "middle");
+    t2.setAttribute("class", "donut-unit"); t2.textContent = "kcal";
+    svg.appendChild(t1); svg.appendChild(t2);
+
+    var legend = el("ul", { class: "donut-legend" }, parts.map(function (p) {
+      var pct = Math.round((p.kcal / total) * 100);
+      return el("li", {}, [
+        el("span", { class: "legend-dot", style: "background:" + p.color }),
+        el("span", { class: "legend-label", text: p.label }),
+        el("span", { class: "legend-val", text: p.grams + " g · " + pct + "%" }),
+      ]);
+    }));
+
+    return el("div", { class: "donut-wrap" }, [svg, legend]);
+  }
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, function (c) {

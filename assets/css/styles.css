@@ -24,7 +24,7 @@
   --radius-sm: 11px;
   --radius-pill: 999px;
   --maxw: 1120px;
-  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Inter", sans-serif;
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color-scheme: light;    /* tema chiaro predefinito (sfondo bianco/panna) */
 }
 
@@ -362,4 +362,63 @@ button { font-family: inherit; cursor: pointer; }
 }
 @media (hover: none) {
   .card:hover { transform: none; }
+}
+
+/* =========================================================================
+   Rifiniture estetiche + nuovi componenti (CTA, filtri, grafico a torta)
+   ========================================================================= */
+
+body { letter-spacing: -0.006em; }
+.brand-title { font-weight: 800; }
+
+/* Titoli di sezione con accento */
+.section-title { display: flex; align-items: center; gap: 10px; }
+.section-title::before {
+  content: ""; width: 4px; height: 1.05em; border-radius: 2px;
+  background: var(--primary); display: inline-block; flex: none;
+}
+
+/* "Vai alle ricette" */
+#summary { scroll-margin-top: 88px; }
+.go-recipes { margin-top: 20px; display: flex; justify-content: center; }
+.btn-go {
+  width: 100%; max-width: 440px; height: 52px; font-size: 1rem;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 8px 22px rgba(31, 122, 96, 0.26);
+  animation: goPop .25s ease;
+}
+.btn-go::after { content: "→"; font-size: 1.15em; transition: transform .15s; }
+.btn-go:hover::after { transform: translateX(3px); }
+@keyframes goPop { from { transform: translateY(6px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* Filtri raggruppati + piè di toolbar */
+.filters { flex-direction: column; align-items: stretch; gap: 12px; }
+.filter-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.filter-group-label {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); min-width: 78px; flex: none;
+}
+.toolbar-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);
+}
+.results-count { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+
+/* Grafico a torta (ciambella) dei macronutrienti */
+.donut-wrap { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.donut { width: 132px; height: 132px; flex: none; }
+.donut-kcal { font-size: 22px; font-weight: 800; fill: var(--text); font-family: var(--font); }
+.donut-unit { font-size: 11px; fill: var(--muted); font-family: var(--font); letter-spacing: 0.04em; }
+.donut-legend { list-style: none; margin: 0; padding: 0; flex: 1 1 190px; min-width: 180px; }
+.donut-legend li { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+.donut-legend li:last-child { border-bottom: none; }
+.legend-dot { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+.legend-label { color: var(--text); font-weight: 600; }
+.legend-val { margin-left: auto; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.donut-note { font-size: 0.8rem; color: var(--muted); margin-top: 14px; padding-left: 12px; border-left: 2px solid var(--border-strong); }
+
+@media (max-width: 640px) {
+  .filter-group { align-items: flex-start; }
+  .filter-group-label { width: 100%; min-width: 0; margin-bottom: 2px; }
+  .donut-wrap { justify-content: center; }
 }

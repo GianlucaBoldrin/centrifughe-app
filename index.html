@@ -15,6 +15,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Centrifughe" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
@@ -68,6 +71,9 @@
         </div>
       </div>
       <div id="ingredients" class="ingredients"></div>
+      <div id="go-recipes" class="go-recipes" hidden>
+        <button id="btn-go-recipes" class="btn btn-go" type="button">Vai alle ricette</button>
+      </div>
     </section>
 
     <!-- RIEPILOGO -->
@@ -88,6 +94,10 @@
         </div>
       </div>
       <div id="filters" class="filters" role="group" aria-label="Filtri"></div>
+      <div class="toolbar-foot">
+        <span id="results-count" class="results-count"></span>
+        <button id="filters-reset" class="link-btn" type="button">Azzera filtri e ricerca</button>
+      </div>
     </section>
 
     <!-- RISULTATI -->
