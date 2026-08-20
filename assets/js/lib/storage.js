@@ -11,6 +11,7 @@
     ingredients: "centrifughe.selectedIngredients",
     favorites: "centrifughe.favorites",
     portion: "centrifughe.portionMl",
+    theme: "centrifughe.theme",
   };
 
   function read(key, fallback) {
@@ -65,6 +66,15 @@
     },
     setPortion: function (ml) {
       write(KEYS.portion, ml);
+    },
+
+    // --- Tema: "light" | "dark" | "auto" (predefinito: light) ---
+    getTheme: function () {
+      var v = read(KEYS.theme, "light");
+      return v === "dark" || v === "auto" ? v : "light";
+    },
+    setTheme: function (mode) {
+      write(KEYS.theme, mode);
     },
   };
 })();

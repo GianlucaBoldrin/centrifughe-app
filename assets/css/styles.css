@@ -25,7 +25,51 @@
   --radius-pill: 999px;
   --maxw: 1120px;
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Inter", sans-serif;
-  color-scheme: light;    /* app sempre in tema chiaro (sfondo bianco/panna) */
+  color-scheme: light;    /* tema chiaro predefinito (sfondo bianco/panna) */
+}
+
+/* --- Palette tema scuro --- */
+/* Attiva quando l'utente sceglie "Scuro" (data-theme="dark")
+   oppure quando sceglie "Auto" e il dispositivo è in modalità scura. */
+:root[data-theme="dark"] {
+  --bg: #12160f;
+  --surface: #1a1f18;
+  --surface-2: #161b14;
+  --text: #eef2ea;
+  --text-soft: #b7c1b8;
+  --muted: #8b968b;
+  --border: #2a3127;
+  --border-strong: #3a4235;
+  --primary: #52b894;
+  --primary-strong: #6bc9a6;
+  --primary-tint: #1d2b25;
+  --ready: #5cc187;
+  --ready-tint: #1c2a20;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 55px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    --bg: #12160f;
+    --surface: #1a1f18;
+    --surface-2: #161b14;
+    --text: #eef2ea;
+    --text-soft: #b7c1b8;
+    --muted: #8b968b;
+    --border: #2a3127;
+    --border-strong: #3a4235;
+    --primary: #52b894;
+    --primary-strong: #6bc9a6;
+    --primary-tint: #1d2b25;
+    --ready: #5cc187;
+    --ready-tint: #1c2a20;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 20px 55px rgba(0, 0, 0, 0.55);
+    color-scheme: dark;
+  }
 }
 
 * { box-sizing: border-box; }
@@ -61,6 +105,7 @@ button { font-family: inherit; cursor: pointer; }
 .brand-logo { border-radius: 11px; box-shadow: var(--shadow-sm); flex: none; }
 .brand-title { font-size: clamp(1.05rem, 2.4vw, 1.35rem); font-weight: 700; }
 .brand-tag { font-size: 0.82rem; color: var(--text-soft); margin-top: 2px; }
+.header-actions { display: flex; align-items: center; gap: 8px; flex: none; }
 .icon-btn {
   flex: none; width: 42px; height: 42px; border-radius: 50%;
   border: 1px solid var(--border-strong); background: var(--surface);
@@ -255,6 +300,8 @@ button { font-family: inherit; cursor: pointer; }
   border: 1px solid var(--border-strong); background: var(--surface); color: var(--text-soft); font-weight: 600; font-size: 0.85rem;
 }
 .btn-fav--on { background: #fdf3d3; border-color: #eab308; color: #a16207; }
+:root[data-theme="dark"] .btn-fav--on { background: #33290b; color: #f2cf5e; }
+@media (prefers-color-scheme: dark) { :root[data-theme="auto"] .btn-fav--on { background: #33290b; color: #f2cf5e; } }
 .m-compat + .missing { margin: 12px 22px 0; }
 
 .m-portion { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 16px 22px 4px; }

@@ -580,7 +580,52 @@
     }
   }
 
+  // ---- Tema chiaro / scuro / auto ----
+  var THEME_ORDER = ["light", "dark", "auto"];
+  var THEME_META = {
+    light: { icon: "☀️", label: "Chiaro" },
+    dark: { icon: "🌙", label: "Scuro" },
+    auto: { icon: "🌗", label: "Auto" },
+  };
+
+  function applyTheme(mode) {
+    document.documentElement.setAttribute("data-theme", mode);
+    var btn = $("#btn-theme");
+    if (btn) {
+      btn.textContent = THEME_META[mode].icon;
+      btn.title = "Tema: " + THEME_META[mode].label + " — tocca per cambiare";
+      btn.setAttribute("aria-label", "Tema: " + THEME_META[mode].label + ". Tocca per cambiare.");
+    }
+    // Aggiorna il colore della barra del browser su mobile
+    var systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var isDark = mode === "dark" || (mode === "auto" && systemDark);
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", isDark ? "#12160f" : "#1F7A60");
+  }
+
+  function initTheme() {
+    var mode = Store.getTheme();
+    applyTheme(mode);
+    var btn = $("#btn-theme");
+    if (btn) {
+      btn.addEventListener("click", function () {
+        var cur = Store.getTheme();
+        var next = THEME_ORDER[(THEME_ORDER.indexOf(cur) + 1) % THEME_ORDER.length];
+        Store.setTheme(next);
+        applyTheme(next);
+      });
+    }
+    // Se in modalità "auto", reagisci ai cambi di tema del sistema
+    if (window.matchMedia) {
+      var mq = window.matchMedia("(prefers-color-scheme: dark)");
+      var onChange = function () { if (Store.getTheme() === "auto") applyTheme("auto"); };
+      if (mq.addEventListener) mq.addEventListener("change", onChange);
+      else if (mq.addListener) mq.addListener(onChange);
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    initTheme();
     initPWA();
     boot();
   });

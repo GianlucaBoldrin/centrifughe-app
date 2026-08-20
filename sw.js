@@ -2,7 +2,7 @@
  * Strategia: cache-first per gli asset statici, con aggiornamento in background.
  * Le chiamate a Supabase (rete) NON vengono messe in cache.
  */
-var CACHE = "centrifughe-v1";
+var CACHE = "centrifughe-v2";
 var ASSETS = [
   "./",
   "./index.html",
